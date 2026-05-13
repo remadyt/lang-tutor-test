@@ -1,0 +1,74 @@
+@import 'tailwindcss';
+
+@theme {
+	--font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@layer base {
+	button:not(:disabled),
+	[role='button']:not(:disabled),
+	summary,
+	label:has(input[type='checkbox']):not(:has(input:disabled)),
+	label:has(input[type='radio']):not(:has(input:disabled)),
+	select:not(:disabled) {
+		cursor: pointer;
+	}
+}
+
+@layer utilities {
+	.scrollbar-soft {
+		scrollbar-gutter: stable;
+		scrollbar-width: thin;
+		scrollbar-color: theme('colors.zinc.300') transparent;
+	}
+
+	.scrollbar-soft::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+
+	.scrollbar-soft::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.scrollbar-soft::-webkit-scrollbar-thumb {
+		background-color: theme('colors.zinc.300');
+		border-radius: 9999px;
+		border: 2px solid transparent;
+		background-clip: content-box;
+	}
+
+	.scrollbar-soft::-webkit-scrollbar-thumb:hover {
+		background-color: theme('colors.zinc.400');
+		background-clip: content-box;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.scrollbar-soft {
+			scrollbar-color: theme('colors.zinc.700') transparent;
+		}
+
+		.scrollbar-soft::-webkit-scrollbar-thumb {
+			background-color: theme('colors.zinc.700');
+		}
+
+		.scrollbar-soft::-webkit-scrollbar-thumb:hover {
+			background-color: theme('colors.zinc.600');
+		}
+	}
+}
+
+html {
+	font-family: var(--font-sans);
+	font-feature-settings: 'cv11', 'ss01';
+	font-variation-settings: 'opsz' 32;
+	background-color: theme('colors.zinc.50');
+	color: theme('colors.zinc.900');
+}
+
+@media (prefers-color-scheme: dark) {
+	html {
+		background-color: theme('colors.zinc.950');
+		color: theme('colors.zinc.50');
+	}
+}

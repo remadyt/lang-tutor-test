@@ -11,22 +11,26 @@
 	import { type Interest, interestLabel, INTERESTS } from '$lib/domain/interests';
 	import { findLanguage, LANGUAGES } from '$lib/domain/languages';
 	import { formatLabel, LESSON_FORMATS, type LessonFormat } from '$lib/domain/lesson-format';
+	import {
+		nextOnboardingStep,
+		ONBOARDING_STEP_COUNT,
+		type OnboardingStep,
+		onboardingStepNumber,
+		previousOnboardingStep,
+	} from '$lib/domain/onboarding';
 	import { localeStore, t } from '$lib/i18n.svelte';
 	import { Routes } from '$lib/routing/routes';
 	import { profileStore } from '$lib/stores/profile.svelte';
 	import { onMount } from 'svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 
-	type Step = 1 | 2 | 3;
-
-	const TOTAL_STEPS = 3;
 	const DEFAULT_NATIVE_LANGUAGE_CODE = 'en';
 	const DEFAULT_TARGET_LANGUAGE_CODE = 'es';
 	const DEFAULT_LEVEL: Cefr = 'A2';
 	const DEFAULT_INTERESTS: readonly Interest[] = ['everyday'];
 	const DEFAULT_FORMATS: readonly LessonFormat[] = ['new-vocab', 'review'];
 
-	let step = $state<Step>(1);
+	let step = $state<OnboardingStep>('languages');
 	let nativeLanguageCode = $state<string>(DEFAULT_NATIVE_LANGUAGE_CODE);
 	let targetLanguageCode = $state<string>(DEFAULT_TARGET_LANGUAGE_CODE);
 	let selectedLevel = $state<Cefr>(DEFAULT_LEVEL);
@@ -34,23 +38,25 @@
 	const selectedFormats = new SvelteSet<LessonFormat>(DEFAULT_FORMATS);
 	let isSaving = $state(false);
 
-	const canContinueStep1 = $derived(
+	const canContinueLanguages = $derived(
 		nativeLanguageCode !== '' &&
 			targetLanguageCode !== '' &&
 			nativeLanguageCode !== targetLanguageCode,
 	);
+	const nextStep = $derived(nextOnboardingStep(step));
+	const previousStep = $derived(previousOnboardingStep(step));
 
 	const stepTitle = $derived.by(() => {
 		switch (step) {
-			case 1: {
+			case 'languages': {
 				return t('onboarding_step1_title');
 			}
 
-			case 2: {
+			case 'level': {
 				return t('onboarding_step2_title');
 			}
 
-			case 3: {
+			case 'preferences': {
 				return t('onboarding_step3_title');
 			}
 		}
@@ -58,15 +64,15 @@
 
 	const stepDescription = $derived.by(() => {
 		switch (step) {
-			case 1: {
+			case 'languages': {
 				return t('onboarding_step1_description');
 			}
 
-			case 2: {
+			case 'level': {
 				return t('onboarding_step2_description');
 			}
 
-			case 3: {
+			case 'preferences': {
 				return t('onboarding_step3_description');
 			}
 		}
@@ -144,13 +150,16 @@
 
 <main class="mx-auto max-w-2xl space-y-6 px-4 py-10">
 	<SectionHeading
-		eyebrow={t('onboarding_step_of', { current: step, total: TOTAL_STEPS })}
+		eyebrow={t('onboarding_step_of', {
+			current: onboardingStepNumber(step),
+			total: ONBOARDING_STEP_COUNT,
+		})}
 		title={stepTitle}
 		description={stepDescription}
 	/>
 
 	<Card>
-		{#if step === 1}
+		{#if step === 'languages'}
 			{@const nativeOptions = LANGUAGES.filter(
 				(language) => language.code !== targetLanguageCode,
 			).map((language) => ({
@@ -177,7 +186,7 @@
 					bind:value={targetLanguageCode}
 				/>
 			</div>
-		{:else if step === 2}
+		{:else if step === 'level'}
 			<ul class="grid gap-2">
 				{#each CEFR_LEVELS as level (level)}
 					<li>
@@ -241,18 +250,20 @@
 	<nav class="flex items-center justify-between">
 		<Button
 			variant="ghost"
-			disabled={step === 1}
+			disabled={previousStep === undefined}
 			onclick={() => {
-				step = (step - 1) as Step;
+				if (previousStep !== undefined) {
+					step = previousStep;
+				}
 			}}
 		>
 			{t('common_back')}
 		</Button>
-		{#if step < 3}
+		{#if nextStep !== undefined}
 			<Button
-				disabled={step === 1 && !canContinueStep1}
+				disabled={step === 'languages' && !canContinueLanguages}
 				onclick={() => {
-					step = (step + 1) as Step;
+					step = nextStep;
 				}}
 			>
 				{t('common_continue')}

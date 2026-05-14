@@ -26,7 +26,7 @@
 		<select
 			bind:value
 			{...rest}
-			class="block w-full appearance-none rounded-xl border border-zinc-200 bg-white py-2.5 pr-9 pl-3 text-sm text-zinc-900 shadow-sm transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/40 focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+			class="block w-full appearance-none rounded-xl border border-zinc-200 bg-white py-2.5 pr-9 pl-3 text-base text-zinc-900 shadow-sm transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/40 focus:outline-none sm:text-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
 		>
 			{#each options as option (option.value)}
 				<option value={option.value}>

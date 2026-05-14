@@ -423,7 +423,7 @@
 					rows="1"
 					disabled={isBusy}
 					placeholder={t('common_your_answer_placeholder')}
-					class="block h-11 max-h-40 w-full resize-none rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm leading-6 shadow-sm focus:ring-2 focus:ring-violet-500/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+					class="block h-11 max-h-40 w-full resize-none rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-base leading-6 shadow-sm focus:ring-2 focus:ring-violet-500/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
 					onkeydown={(event) => {
 						if (event.key === 'Enter' && !event.shiftKey && !isBusy) {
 							event.preventDefault();
